@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QAudioOutput>
 #include <QMediaPlayer>
+#include <QTemporaryFile>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -16,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QByteArray ba = file.readAll();
     qDebug() << "ByteArray size:" << ba.size(); // ByteArray size: 11181085
-
+    /* // ByteArray Buffer variant
     QBuffer* buffer = new QBuffer(this);
     buffer->setData(ba);
     if(!buffer->open(QIODevice::ReadOnly))
@@ -24,15 +25,11 @@ MainWindow::MainWindow(QWidget *parent)
     qDebug() << "Buffer size:" << buffer->size(); // Buffer size: 11181085
 
     buffer->seek(qint64(0));
-
+    */
     auto audioOutput = new QAudioOutput(this);
     auto player = new QMediaPlayer(this);
     player->setAudioOutput(audioOutput);
     audioOutput->setVolume(50);
-
-    //player->setSource(QUrl::fromLocalFile("-----/test/Bankrobber.mp3"));
-    player->setSourceDevice(buffer);
-    qDebug() << "Device:" << player->sourceDevice(); // Device: QBuffer(0x563180493020)
 
     QObject::connect(player, &QMediaPlayer::mediaStatusChanged,
                      [=](QMediaPlayer::MediaStatus status)
@@ -45,6 +42,23 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(player, &QMediaPlayer::playbackStateChanged,
                      [=](QMediaPlayer::PlaybackState state)
     { qDebug() << "PlaybackState:" << state; });
+
+    // TemporaryFile variant
+    QTemporaryFile tfile;
+    if (!tfile.open())
+        qDebug() << "TemporaryFile not opened";
+    else
+    {
+        qDebug() << "TemporaryFile writed:" << tfile.write(ba);
+        if(tfile.size() != ba.size())
+            qDebug() << "TemporaryFile not complited";
+        else
+            player->setSource(QUrl::fromLocalFile(tfile.fileName()));
+    }
+    /* // ByteArray Buffer variant
+      player->setSourceDevice(buffer);
+    qDebug() << "Device:" << player->sourceDevice(); // Device: QBuffer(0x563180493020)
+    */
 
     player->play();
     qDebug() << "MediaStatus:" << player->mediaStatus(); // MediaStatus: QMediaPlayer::NoMedia
