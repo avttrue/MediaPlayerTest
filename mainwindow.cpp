@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     QBuffer* buffer = new QBuffer(this);
     buffer->setData(ba);
     if(!buffer->open(QIODevice::ReadOnly))
-        qDebug() << "MediaPlayer: Device not opened";
+        qDebug() << "Buffer not opened";
     qDebug() << "Buffer size:" << buffer->size(); // Buffer size: 11181085
 
     buffer->seek(qint64(0));
