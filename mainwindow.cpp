@@ -9,7 +9,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    QFile file("../test/Bankrobber.mp3");
+    QFile file("/home/trifonovav/Projects_QT/Viola/test/Bankrobber.mp3");
     if(!file.open(QIODevice::ReadOnly))
         qDebug() << "File not opened";
     qDebug() << "File size:" << file.size(); // File size: 11181085
@@ -29,12 +29,14 @@ MainWindow::MainWindow(QWidget *parent)
     auto player = new QMediaPlayer(this);
     player->setAudioOutput(audioOutput);
     audioOutput->setVolume(50);
+
+    //player->setSource(QUrl::fromLocalFile("-----/test/Bankrobber.mp3"));
     player->setSourceDevice(buffer);
     qDebug() << "Device:" << player->sourceDevice(); // Device: QBuffer(0x563180493020)
 
     QObject::connect(player, &QMediaPlayer::mediaStatusChanged,
                      [=](QMediaPlayer::MediaStatus status)
-    { qDebug() << "MediaStatus:" << player->mediaStatus() << "|" << status; });
+    { qDebug() << "MediaStatus:" << status; });
 
     QObject::connect(player, &QMediaPlayer::errorOccurred,
                      [=](QMediaPlayer::Error error)
@@ -42,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QObject::connect(player, &QMediaPlayer::playbackStateChanged,
                      [=](QMediaPlayer::PlaybackState state)
-    { qDebug() << "PlaybackState:" << player->playbackState() << "|" << state; });
+    { qDebug() << "PlaybackState:" << state; });
 
     player->play();
     qDebug() << "MediaStatus:" << player->mediaStatus(); // MediaStatus: QMediaPlayer::NoMedia
