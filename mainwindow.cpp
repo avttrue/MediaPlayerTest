@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QByteArray ba = file.readAll();
     qDebug() << "ByteArray size:" << ba.size(); // ByteArray size: 11181085
+
     /* // ByteArray Buffer variant
     QBuffer* buffer = new QBuffer(this);
     buffer->setData(ba);
@@ -56,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
         else
             player->setSource(QUrl::fromLocalFile(tfile.fileName()));
     }
+
     /* // ByteArray Buffer variant
       player->setSourceDevice(buffer);
     qDebug() << "Device:" << player->sourceDevice(); // Device: QBuffer(0x563180493020)
